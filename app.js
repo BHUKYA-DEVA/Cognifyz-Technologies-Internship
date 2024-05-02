@@ -1,34 +1,38 @@
-const express= require('express');
-const port=process.env.port || 5000;
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
-const app=express();
-exports.app = app;
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.static('public'));
-
-
-
-app.get('/Form',(req,res)=>
+app.get('/Form1',(req,res)=>
 {
-    res.sendFile(__dirname + '/public/index.html')
+    res.sendFile(__dirname + '/public/form.html')
 
 })
 
+app.post('/submit-form', (req, res) => {
+    const { username, email } = req.body;
 
+    if (!username || !email) {
+        res.status(400).send('Please fill in all fields.');
+        return;
+    }
+    res.send('Form submitted successfully!');
+});
 
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+let formData = [];
 
+app.post('/submit-form', (req, res) => {
+    const { username, email } = req.body;
 
-app.post('/formPost',(req,res)=>{
-    console.log(req.body);
-
-    res.sendStatus(__dirname+'/public/thanks.html');
-
-})
-
-
-app.listen(port,()=>{
-    console.log(`Server started at http://localhost:${port}`)
-
+    if (!username || !email) {
+        res.status(400).send('Please fill in all fields.');
+        return;
+    }
+    formData.push({ username, email });
+    res.send('Form submitted successfully!');
 });
